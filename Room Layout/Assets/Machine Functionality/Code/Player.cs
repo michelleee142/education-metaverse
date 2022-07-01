@@ -140,7 +140,7 @@ public class Player : MonoBehaviour
                 case Interactables.TurnHandle:
                     if (moveInput.x != 0) 
                     {
-                        target.GetComponent<TurnHandle>().Turn(moveInput.x * -3f);
+                        target.GetComponent<TurnHandle>().Turn(moveInput.x * -360f);
                     }
                     break;
                 case Interactables.Switch:

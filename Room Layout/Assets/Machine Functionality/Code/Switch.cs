@@ -12,23 +12,37 @@ public class Switch : MonoBehaviour
     [SerializeField] Transform block;
     [SerializeField] float speed = 1f;
     private SwitchState state;
+    [SerializeField] Vector3 upPosition;
+    [SerializeField] Vector3 upRotation;
+    [SerializeField] Vector3 downPosition;
+    [SerializeField] Vector3 downRotation;
+    [SerializeField] Vector3 neutralPosition;
+    [SerializeField] Vector3 neutralRotation;
+
 
     public void SetUp() 
     { 
         state = SwitchState.Up; 
-        transform.localRotation = Quaternion.Euler(15, 0, 0);
+        // transform.localRotation = Quaternion.Euler(15, 0, 0);
+        transform.localPosition = upPosition;
+        transform.localRotation = Quaternion.Euler(upRotation.x, upRotation.y, upRotation.z);
+
     }
 
     public void SetDown() 
     { 
         state = SwitchState.Down; 
-        transform.localRotation = Quaternion.Euler(-15, 0, 0);
+        // transform.localRotation = Quaternion.Euler(-15, 0, 0);
+        transform.localPosition = downPosition;
+        transform.localRotation = Quaternion.Euler(downRotation.x, downRotation.y, downRotation.z);
     }
 
     public void SetNeutral() 
     { 
         state = SwitchState.Neutral; 
-        transform.localRotation = Quaternion.Euler(0, 0, 0);
+        // transform.localRotation = Quaternion.Euler(0, 0, 0);
+        transform.localPosition = neutralPosition;
+        transform.localRotation = Quaternion.Euler(neutralRotation.x, neutralRotation.y, neutralRotation.z);
     }
 
     // moves an object up and down

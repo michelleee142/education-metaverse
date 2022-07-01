@@ -4,8 +4,14 @@ using UnityEngine;
 
 public class Button : MonoBehaviour
 {
+    public enum PushDirection 
+    {
+        x, y, z
+    }
+
     [SerializeField] Transform startPoint;
     [SerializeField] float depressMax;
+    [SerializeField] PushDirection pushDirection;
 
     bool pressed;
 
@@ -13,7 +19,7 @@ public class Button : MonoBehaviour
     float minimum;
     float maximum;
     float startTime;
-    float lastY;
+    float lastPos;
 
     // Time taken for the transition.
     float duration = 0.2f;
@@ -21,50 +27,60 @@ public class Button : MonoBehaviour
     void Start() 
     {
         pressed = false;
-        maximum = startPoint.position.y;
-        minimum = startPoint.position.y - depressMax;
-        lastY = transform.position.y;
+
+        switch(pushDirection) 
+        {
+            case PushDirection.x:
+                maximum = startPoint.localPosition.x;
+                minimum = startPoint.localPosition.x - depressMax;
+                lastPos = transform.localPosition.x;
+                break;
+            case PushDirection.y:
+                maximum = startPoint.localPosition.y;
+                minimum = startPoint.localPosition.y - depressMax;
+                lastPos = transform.localPosition.y;
+                break;
+            default:
+                maximum = startPoint.localPosition.z;
+                minimum = startPoint.localPosition.z - depressMax;
+                lastPos = transform.localPosition.z;
+                break;
+        }
+
         startTime = Time.time;
     }
 
     public void PressButton() {
         // button press code here
         Debug.Log("I am pressed.");
-        lastY = transform.position.y;
+        UpdateLastPos();
         startTime = Time.time;
         pressed = true;
-        // StartCoroutine(GoDown());
     }
 
-    // public IEnumerator GoDown() {
-    //     float startTime = Time.time;
-    //     while (true) 
-    //     {
-    //         // Calculate the fraction of the total duration that has passed.
-    //         float t = (Time.time - startTime) / duration;
-    //         transform.position = new Vector3(transform.position.x, Mathf.SmoothStep(minimum, maximum, t), transform.position.z);
-    //     }
-    //     yield return null;
-    // }
+    void UpdateLastPos()
+    {
+        switch(pushDirection) 
+        {
+            case PushDirection.x:
+                lastPos = transform.localPosition.x;
+                break;
+            case PushDirection.y:
+                lastPos = transform.localPosition.y;
+                break;
+            default:
+                lastPos = transform.localPosition.z;
+                break;
+        }
+    }
 
     public void UnpressButton() {
         Debug.Log("I am no longer pressed.");
-        lastY = transform.position.y;
+        UpdateLastPos();
         startTime = Time.time;
         pressed = false;
         // StartCoroutine(GoUp());
     }
-
-    // public IEnumerator GoUp() {
-    //     float startTime = Time.time;
-    //     while (Time.time - startTime <= duration) 
-    //     {
-    //         // Calculate the fraction of the total duration that has passed.
-    //         float t = (Time.time - startTime) / duration;
-    //         transform.position = new Vector3(transform.position.x, Mathf.SmoothStep(maximum, minimum, t), transform.position.z);
-    //     }
-    //     yield return null;
-    // }
 
     void Update() 
     {
@@ -72,14 +88,31 @@ public class Button : MonoBehaviour
         {
             float t = (Time.time - startTime) / duration;
             // transform.position = new Vector3(transform.position.x, Mathf.SmoothStep(minimum, maximum, t), transform.position.z);
-            transform.position = new Vector3(transform.position.x, Mathf.SmoothStep(lastY, maximum, t), transform.position.z);
-
+            UpdatePosition(minimum, maximum);
         }
         else 
         {
             float t = (Time.time - startTime) / duration;
             // transform.position = new Vector3(transform.position.x, Mathf.SmoothStep(maximum, minimum, t), transform.position.z);
-            transform.position = new Vector3(transform.position.x, Mathf.SmoothStep(lastY, minimum, t), transform.position.z);
+            UpdatePosition(maximum, minimum);
+        }
+    }
+
+    void UpdatePosition(float pos1, float pos2)
+    {
+        float t = (Time.time - startTime) / duration;
+        float newPos = Mathf.SmoothStep(pos1, pos2, t);
+        switch(pushDirection) 
+        {
+            case PushDirection.x:
+                transform.localPosition = new Vector3(newPos, transform.localPosition.y, transform.localPosition.z);
+                break;
+            case PushDirection.y:
+                transform.localPosition = new Vector3(transform.localPosition.x, newPos, transform.localPosition.z);
+                break;
+            default:
+                transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, newPos);
+                break;
         }
     }
 

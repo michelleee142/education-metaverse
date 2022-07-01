@@ -6,6 +6,7 @@ public class TurnHandle : MonoBehaviour
 {
     public float scale = 0.01f;
     [SerializeField] Clamp clamp;
+    [SerializeField] Transform center;
 
     public void Grab() 
     {
@@ -19,9 +20,14 @@ public class TurnHandle : MonoBehaviour
 
     public void Turn(float degrees) 
     {
-        if (clamp.Widen(degrees * scale * Time.deltaTime))
+        // transform.Rotate(0, degrees, 0);
+        if (clamp.Widen(-degrees * scale * Time.deltaTime))
         {
-            transform.Rotate(0, degrees, 0);
+            transform.RotateAround(center.position, Vector3.up, degrees * Time.deltaTime);
         }
+        // if (clamp.Widen(degrees * scale * Time.deltaTime))
+        // {
+        //     transform.Rotate(0, degrees, 0);
+        // }
     }
 }

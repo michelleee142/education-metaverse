@@ -17,8 +17,8 @@ public class Clamp : MonoBehaviour
 
         Vector3 change = new Vector3(amount, 0, 0);
         center.transform.localScale += change;
-        leftClamp.transform.localPosition -= change/2;
-        rightClamp.transform.localPosition += change/2;
+        leftClamp.transform.localPosition += change/2;
+        rightClamp.transform.localPosition -= change/2;
         return true;
     }
 }
