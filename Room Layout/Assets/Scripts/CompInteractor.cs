@@ -11,6 +11,9 @@ public class CompInteractor : MonoBehaviour
     [SerializeField] GameObject testScreen;
     [SerializeField] TMP_Dropdown materialsList;
     [SerializeField] TMP_Text selectedMaterial;
+    [SerializeField] GameObject sample;
+
+    MeshRenderer sampleRenderer;
 
     private int materialIndex = 0;
 
@@ -22,6 +25,9 @@ public class CompInteractor : MonoBehaviour
         // set home screen
         homeScreen.SetActive(true);
         testScreen.SetActive(false);
+
+        // get renderer of sample
+        sampleRenderer = sample.GetComponent<MeshRenderer>();
     }
 
     // Update is called once per frame
@@ -40,8 +46,32 @@ public class CompInteractor : MonoBehaviour
         // save selected material
         materialIndex = materialsList.value;
 
-        // set material to selected material
+        // set material text to selected material
         selectedMaterial.text = "Selected material: " + materials[materialIndex];
+
+        // change material color on machine to selected material
+        switch (materialIndex)
+        {
+            // original steel - blue
+            case 0:
+                sampleRenderer.material.color = Color.blue;
+                break;
+
+            // normalized steel - green
+            case 1:
+                sampleRenderer.material.color = Color.green;
+                break;
+
+            // quenched steel - red
+            case 2:
+                sampleRenderer.material.color = Color.red;
+                break;
+
+            // default - return to blue
+            default:
+                sampleRenderer.material.color = Color.blue;
+                break;
+        }
 
         // perform tests
 
