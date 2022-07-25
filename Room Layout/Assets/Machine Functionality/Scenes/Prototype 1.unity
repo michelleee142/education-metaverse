@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028331, g: 0.2257133, b: 0.3069217, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -269,6 +269,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 0.01
   clamp: {fileID: 523918632}
+  center: {fileID: 0}
 --- !u!65 &134038809
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -636,6 +637,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 0.01
   clamp: {fileID: 2059693407}
+  center: {fileID: 0}
 --- !u!1 &471739301
 GameObject:
   m_ObjectHideFlags: 0
@@ -2282,6 +2284,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   block: {fileID: 607670511}
   speed: 1
+  upPosition: {x: 0, y: 0, z: 0}
+  upRotation: {x: 0, y: 0, z: 0}
+  downPosition: {x: 0, y: 0, z: 0}
+  downRotation: {x: 0, y: 0, z: 0}
+  neutralPosition: {x: 0, y: 0, z: 0}
+  neutralRotation: {x: 0, y: 0, z: 0}
 --- !u!65 &1687583421
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2394,6 +2402,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 0.01
   clamp: {fileID: 528673748}
+  center: {fileID: 0}
 --- !u!65 &1698462088
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2883,6 +2892,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   block: {fileID: 2032534586}
   speed: 1
+  upPosition: {x: 0, y: 0, z: 0}
+  upRotation: {x: 0, y: 0, z: 0}
+  downPosition: {x: 0, y: 0, z: 0}
+  downRotation: {x: 0, y: 0, z: 0}
+  neutralPosition: {x: 0, y: 0, z: 0}
+  neutralRotation: {x: 0, y: 0, z: 0}
 --- !u!65 &1903342784
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -4,35 +4,58 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.InputSystem;
 
 public class CompInteractor : MonoBehaviour
 {
+    [SerializeField] GameObject welcomeScreen;
     [SerializeField] GameObject homeScreen;
     [SerializeField] GameObject testScreen;
     [SerializeField] TMP_Dropdown materialsList;
     [SerializeField] TMP_Text selectedMaterial;
-    [SerializeField] GameObject sample;
-
-    MeshRenderer sampleRenderer;
-
-    private int materialIndex = 0;
 
     private string[] materials = new string[] { "Original Steel", "Normalized Steel", "Quenched Steel"};
+    private GameObject activeScreen;
+    private int materialIndex = 0;
+
+    public InputActionReference compPower = null;
+
+    // Toggle computer screen on when user clicks primary button
+    void Awake()
+    {
+        compPower.action.started += compPowerToggle;
+    }
+
+    // Toggle computer screen off when user clicks primary button
+    void onDestroy()
+    {
+        compPower.action.started -= compPowerToggle;
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        // set home screen
-        homeScreen.SetActive(true);
+        // keep labs screens off initially
+        homeScreen.SetActive(false);
         testScreen.SetActive(false);
 
-        // get renderer of sample
-        sampleRenderer = sample.GetComponent<MeshRenderer>();
+        // set current active screen to home
+        activeScreen = homeScreen;
     }
 
     // Update is called once per frame
     void Update()
     {
+
+    }
+
+    // Toggle computer screen
+    private void compPowerToggle(InputAction.CallbackContext context)
+    {
+        bool isActive = !activeScreen.activeSelf;
+
+        activeScreen.SetActive(isActive);
+        welcomeScreen.SetActive(!isActive);
 
     }
 
@@ -42,36 +65,13 @@ public class CompInteractor : MonoBehaviour
         // switch to test screen
         homeScreen.SetActive(false);
         testScreen.SetActive(true);
+        activeScreen = testScreen;
 
         // save selected material
         materialIndex = materialsList.value;
 
         // set material text to selected material
         selectedMaterial.text = "Selected material: " + materials[materialIndex];
-
-        // change material color on machine to selected material
-        switch (materialIndex)
-        {
-            // original steel - blue
-            case 0:
-                sampleRenderer.material.color = Color.blue;
-                break;
-
-            // normalized steel - green
-            case 1:
-                sampleRenderer.material.color = Color.green;
-                break;
-
-            // quenched steel - red
-            case 2:
-                sampleRenderer.material.color = Color.red;
-                break;
-
-            // default - return to blue
-            default:
-                sampleRenderer.material.color = Color.blue;
-                break;
-        }
 
         // perform tests
 
@@ -83,6 +83,7 @@ public class CompInteractor : MonoBehaviour
         // switch to home screen
         testScreen.SetActive(false);
         homeScreen.SetActive(true);
+        activeScreen = homeScreen;
 
         // return machine back to starting state
     }

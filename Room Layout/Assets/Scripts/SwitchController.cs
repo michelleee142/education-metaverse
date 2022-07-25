@@ -15,4 +15,15 @@ public class SwitchController : MonoBehaviour
     {
         
     }
+
+    public void MoveUp()
+    {
+
+    }
+
+    public void MoveDown()
+    {
+
+    }
+
 }
