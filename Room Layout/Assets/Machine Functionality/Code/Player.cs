@@ -67,7 +67,7 @@ public class Player : MonoBehaviour
                 Debug.Log("Hit interactable");
                 target = hit.transform;
                 hasTarget = true;
-
+                
                 Button btn = hit.transform.GetComponent<Button>();
                 TurnHandle th = hit.transform.GetComponent<TurnHandle>();
                 Switch sw = hit.transform.GetComponent<Switch>();

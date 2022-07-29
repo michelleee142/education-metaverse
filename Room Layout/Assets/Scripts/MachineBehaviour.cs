@@ -8,6 +8,14 @@ public class MachineBehaviour : MonoBehaviour
 {
     [SerializeField] Transform cameraTransform;
     [SerializeField] LayerMask targetLayer;
+    [SerializeField] LayerMask bottomHandleLayer;
+    [SerializeField] LayerMask topHandleLayer;
+    //[SerializeField] Transform center;
+    [SerializeField] GameObject bottomHandle;
+    [SerializeField] GameObject topHandle;
+
+    HandleController bottomHandleController;
+    HandleController topHandleController;
 
     public enum Interactables
     {
@@ -24,27 +32,33 @@ public class MachineBehaviour : MonoBehaviour
 
     private Transform target;
     private Interactables targetType;
-
     private bool hasTarget = false;
     private bool grabbed = false;
+    private float triggerLValue;        // for counterclockwise motion
+    private float triggerRValue;        // for clockwise motion
+    private bool turnClockwise = false;
+    private bool turnCounterClockwise = false;
+    private int handleLocation = 0;   // bottom = 0 and top = 1
 
     // DELETE LATER
-    public InputActionReference toggleReference = null;
+    //public InputActionReference toggleReference = null;
     public GameObject machine;
     private MeshRenderer meshRenderer = null;
+
 
     // Awake 
     private void Awake()
     {
+        // setup XR user interaction methods
         interactReference.action.started += OnUse;
         interactReference.action.canceled += OnUseCancel;
         oppositeInteractReference.action.started += OnOpposite;
         oppositeInteractReference.action.canceled += OnOppositeCancel;
 
-        // DELETE LATER
-        /*toggleReference.action.started += Toggle;
-        toggleReference.action.canceled += ToggleCancel;*/
-        meshRenderer = machine.GetComponent<MeshRenderer>(); 
+        // get various components
+        meshRenderer = machine.GetComponent<MeshRenderer>();
+        bottomHandleController = bottomHandle.GetComponent<HandleController>();
+        topHandleController = topHandle.GetComponent<HandleController>();
     }
 
     // Start is called before the first frame update
@@ -56,42 +70,38 @@ public class MachineBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // read in trigger value
+        triggerRValue = interactReference.action.ReadValue<float>();
 
-    }
+        // read in grip value
+        triggerLValue = oppositeInteractReference.action.ReadValue<float>();
 
-    /*
-    // DELETE LATER
-    private void Toggle(InputAction.CallbackContext context)
-    {
-        //bool isActive = !machine.activeSelf;
-
-        if (!hasTarget)
+        // turn handle clockwise if user has triggered handle
+        if (turnClockwise)
         {
-            RaycastHit hit;
-
-            // check if target has been hit
-            if (Physics.Raycast(cameraTransform.position, cameraTransform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, targetLayer))
+            if (handleLocation == 0)
             {
-                //machine.SetActive(isActive);
-                meshRenderer.material.color = Color.red;
-
-                hasTarget = true;
-
+                bottomHandleController.TurnClockwise(triggerRValue, handleLocation);
+            }
+            else if (handleLocation == 1)
+            {
+                topHandleController.TurnClockwise(triggerRValue, handleLocation);
+            }
+        }
+        // turn handle counterclockwise if user has triggered handle
+        if (turnCounterClockwise)
+        {
+            if (handleLocation == 0)
+            {
+                bottomHandleController.TurnCounterClockwise(triggerLValue, handleLocation);
+            }
+            else if (handleLocation == 1)
+            {
+                topHandleController.TurnCounterClockwise(triggerLValue, handleLocation);
             }
         }
 
-    } */
-
-    // DELETE LATER
-    /*private void ToggleCancel(InputAction.CallbackContext context)
-    {
-        // if a target has been hit, release it
-        if (hasTarget)
-        {
-            hasTarget = false;
-            meshRenderer.material.color = Color.blue;
-        }
-    } */
+    }
 
     // When user interacts with elements of machine
     void OnUse(InputAction.CallbackContext context)
@@ -101,21 +111,60 @@ public class MachineBehaviour : MonoBehaviour
         {
             RaycastHit hit;
 
-            // check if target has been hit
-            if (Physics.Raycast(cameraTransform.position, cameraTransform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, targetLayer))
+            // check if bottom handles have been hit
+            if (Physics.Raycast(cameraTransform.position, cameraTransform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, bottomHandleLayer))
             {
-                Debug.Log("Target hit!");
+                // DEBUGING
+                meshRenderer.material.color = Color.red;
+
+                // store bottom handle hit
+                handleLocation = 0;
 
                 // save hit target
                 target = hit.transform;
                 hasTarget = true;
 
-                Debug.Log(target.name);
+                // save target type
+                targetType = Interactables.TurnHandle;
+
+                // set bool turnClockwise to true
+                turnClockwise = true;
+            }
+
+            // check if top handles have been hit
+            if (Physics.Raycast(cameraTransform.position, cameraTransform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, topHandleLayer))
+            {
+                // DEBUGING
+                meshRenderer.material.color = Color.blue;
+
+                // store top handle hit
+                handleLocation = 1;
+
+                // save hit target
+                target = hit.transform;
+                hasTarget = true;
+
+                // save target type
+                targetType = Interactables.TurnHandle;
+
+                // set bool turnClockwise to true
+                turnClockwise = true;
+            }
+
+            /*
+            // check if target has been hit
+            if (Physics.Raycast(cameraTransform.position, cameraTransform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, targetLayer))
+            {
+                Debug.LogError("Target hit!");
+
+                // save hit target
+                target = hit.transform;
+                hasTarget = true;
 
                 // save component of hit target
-                ButtonController btn = hit.transform.GetComponent<ButtonController>();
-                HandleController th = hit.transform.GetComponent<HandleController>();
-                SwitchController sw = hit.transform.GetComponent<SwitchController>();
+                ButtonController btn = hit.transform.gameObject.GetComponent<ButtonController>();
+                HandleController th = hit.transform.gameObject.GetComponent<HandleController>();
+                SwitchController sw = hit.transform.gameObject.GetComponent<SwitchController>();
 
                 // check which target was hit and perform desired action
                 if (btn != null)
@@ -125,8 +174,6 @@ public class MachineBehaviour : MonoBehaviour
                 }
                 else if (th != null)
                 {
-                    // DELETE LATER
-                    meshRenderer.material.color = Color.red;
 
                     targetType = Interactables.TurnHandle;
                     //th.TurnClockwise(interactReference.action.ReadValue<float>());
@@ -139,12 +186,8 @@ public class MachineBehaviour : MonoBehaviour
                     //sw.MoveUp();
                     grabbed = true;
                 }
-                else
-                {
 
-                }
-
-            }
+            } */
         }
 
     }
@@ -169,16 +212,14 @@ public class MachineBehaviour : MonoBehaviour
                     break;
 
                 case Interactables.TurnHandle:
-                    // DELETE LATER
-                    meshRenderer.material.color = Color.blue;
-
                     // get turnhandle component of hit target
                     HandleController th = target.GetComponent<HandleController>();
 
                     // ungrab turnhandle
                     if (th != null)
                     {
-                        th.UnGrab(); //FIXME - NOT NEEDED
+                        //th.UnGrab(); //FIXME - NOT NEEDED
+                        turnClockwise = false;
                         grabbed = false;
                     }
                     break;
@@ -210,38 +251,84 @@ public class MachineBehaviour : MonoBehaviour
         {
             RaycastHit hit;
 
-            // check if target has been hit
-            if (Physics.Raycast(cameraTransform.position, cameraTransform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, targetLayer))
+            // check if bottom handles have been hit
+            if (Physics.Raycast(cameraTransform.position, cameraTransform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, bottomHandleLayer))
             {
+                // DEBUGING
+                meshRenderer.material.color = Color.green;
+
+                // store bottom handle hit
+                handleLocation = 0;
+
                 // save hit target
                 target = hit.transform;
                 hasTarget = true;
 
-                // DELETE LATER
-                meshRenderer.material.color = Color.green;
+                // save target type
+                targetType = Interactables.TurnHandle;
 
-                // save component of hit target
-                HandleController th = hit.transform.GetComponent<HandleController>();
-                SwitchController sw = hit.transform.GetComponent<SwitchController>();
-
-                // check which target was hit and perform desired action
-                if (th != null)
-                {
-                    targetType = Interactables.TurnHandle;
-                    //th.TurnCounterClockwise(oppositeInteractReference.action.ReadValue<float>());
-                    th.TurnCounterClockwise();
-                    grabbed = true;
-                }
-                else if (sw != null)
-                {
-                    targetType = Interactables.Switch;
-                    //sw.MoveDown();
-                    grabbed = true;
-                }
-
+                // set bool turnClockwise to true
+                turnCounterClockwise = true;
             }
-        }
 
+            // check if top handles have been hit
+            if (Physics.Raycast(cameraTransform.position, cameraTransform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, topHandleLayer))
+            {
+                // DEBUGING
+                meshRenderer.material.color = Color.yellow;
+
+                // store top handle hit
+                handleLocation = 1;
+
+                // save hit target
+                target = hit.transform;
+                hasTarget = true;
+
+                // save target type
+                targetType = Interactables.TurnHandle;
+
+                // set bool turnClockwise to true
+                turnCounterClockwise = true;
+            }
+            /*
+            // if a target has not been hit yet
+            if (!hasTarget)
+            {
+                RaycastHit hit;
+
+                // check if target has been hit
+                if (Physics.Raycast(cameraTransform.position, cameraTransform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, handleLayer))
+                {
+                    // save hit target
+                    target = hit.transform;
+                    hasTarget = true;
+
+                    // DELETE LATER
+                    meshRenderer.material.color = Color.green;
+
+                    // save component of hit target
+                    HandleController th = hit.transform.GetComponent<HandleController>();
+                    SwitchController sw = hit.transform.GetComponent<SwitchController>();
+
+                    // check which target was hit and perform desired action
+                    if (th != null)
+                    {
+                        targetType = Interactables.TurnHandle;
+                        //th.TurnCounterClockwise(oppositeInteractReference.action.ReadValue<float>());
+                        //th.TurnCounterClockwise();
+                        grabbed = true;
+                    }
+                    else if (sw != null)
+                    {
+                        targetType = Interactables.Switch;
+                        //sw.MoveDown();
+                        grabbed = true;
+                    }
+
+                }
+            }*/
+
+        }
     }
 
     void OnOppositeCancel(InputAction.CallbackContext context)
@@ -249,9 +336,8 @@ public class MachineBehaviour : MonoBehaviour
         // if a target has been hit, release it
         if (hasTarget)
         {
-            // DELETE LATER
-            meshRenderer.material.color = Color.yellow;
 
+            // check which target has been hit and perform exit action
             // check which target has been hit and perform exit action
             switch (targetType)
             {
@@ -262,7 +348,8 @@ public class MachineBehaviour : MonoBehaviour
                     // ungrab turnhandle
                     if (th != null)
                     {
-                        th.UnGrab(); //FIXME - NOT NEEDED
+                        //th.UnGrab(); //FIXME - NOT NEEDED
+                        turnCounterClockwise = false;
                         grabbed = false;
                     }
                     break;

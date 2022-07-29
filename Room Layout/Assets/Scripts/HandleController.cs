@@ -4,9 +4,18 @@ using UnityEngine;
 
 public class HandleController : MonoBehaviour
 {
-    public float scale = 0.01f;
-    [SerializeField] ClampController clamp;
+    public float scale = 1f;
+
+    [SerializeField] GameObject clamp;
     [SerializeField] Transform center;
+
+    ClampController clampController;
+
+    public void Awake()
+    {
+        // get controller components
+        clampController = clamp.GetComponent<ClampController>();
+    }
 
     public void Grab()
     {
@@ -18,22 +27,23 @@ public class HandleController : MonoBehaviour
 
     }
 
-    public void TurnClockwise()
+    // turn handles clockwise
+    public void TurnClockwise(float degrees, int handleLoc)
     {
-        /*if (clamp.Widen(-degrees * scale * Time.deltaTime))
+        // if clamps can be moved, turn handle clockwise
+        if (clampController.Tighten(degrees, handleLoc))
         {
-            transform.RotateAround(center.position, Vector3.up, degrees * Time.deltaTime);
-        }*/
-        transform.RotateAround(center.position, Vector3.up, 90 * Time.deltaTime);
+            transform.RotateAround(center.position, Vector3.up, degrees);
+        }
     }
 
-    public void TurnCounterClockwise()
+    // turn handles counterclockwise
+    public void TurnCounterClockwise(float degrees, int handleLoc)
     {
-        /*if (clamp.Widen(-degrees * scale * Time.deltaTime))
+        // if clamps can be moved, turn handle counterclockwise
+        if (clampController.Widen(degrees, handleLoc))
         {
-            transform.RotateAround(center.position, Vector3.up, degrees * Time.deltaTime);
-        }*/
-        transform.RotateAround(center.position, Vector3.up, 90 * Time.deltaTime);
-
+            transform.RotateAround(center.position, Vector3.up, -degrees);
+        }
     }
 }

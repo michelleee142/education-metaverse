@@ -1080,26 +1080,17 @@
             "actions": [
                 {
                     "name": "Interact",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "de8bbdc4-3d53-4bed-8871-ed11ca5ada51",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 },
                 {
                     "name": "TurnCounterclockwise",
-                    "type": "Button",
-                    "id": "de6a5026-04e7-44ba-8322-89b25c8eaaf8",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Toggle",
                     "type": "Value",
-                    "id": "8558d9ec-69e8-4c5d-86a0-492a1ea8505a",
+                    "id": "de6a5026-04e7-44ba-8322-89b25c8eaaf8",
                     "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": "",
@@ -1123,29 +1114,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Generic XR Controller",
-                    "action": "Interact",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "ebea133c-f22d-4c5d-be18-6827d54eb3a1",
-                    "path": "<XRController>{LeftHand}/gripPressed",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Generic XR Controller",
                     "action": "TurnCounterclockwise",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "a9384e4a-2bce-4222-b593-d7ba5d52a9b5",
-                    "path": "<XRController>{RightHand}/triggerPressed",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Toggle",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1157,6 +1126,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "CompPower",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a9384e4a-2bce-4222-b593-d7ba5d52a9b5",
+                    "path": "<XRController>{RightHand}/triggerPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
