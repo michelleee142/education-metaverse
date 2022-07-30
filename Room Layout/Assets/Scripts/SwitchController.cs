@@ -9,7 +9,7 @@ public class SwitchController : MonoBehaviour
         Up, Down, Neutral
     }
 
-    [SerializeField] GameObject topBlock;
+    [SerializeField] Transform topBlock;
     [SerializeField] float speed = 1f;
 
     private SwitchState state;
@@ -28,7 +28,7 @@ public class SwitchController : MonoBehaviour
             // user requests block to move up
             case SwitchState.Up:
                 topBlock.position = new Vector3
-                    (topblock.position.x, 
+                    (topBlock.position.x, 
                     topBlock.position.y + (speed * Time.deltaTime), 
                     topBlock.position.z);
 
@@ -37,7 +37,7 @@ public class SwitchController : MonoBehaviour
             // user requests block to move down
             case SwitchState.Down:
                 topBlock.position = new Vector3
-                   (topblock.position.x,
+                   (topBlock.position.x,
                    topBlock.position.y - (speed * Time.deltaTime),
                    topBlock.position.z);
 
@@ -54,8 +54,8 @@ public class SwitchController : MonoBehaviour
         state = SwitchState.Up;
 
         // adjust switch
-        transform.localPosition = upPosition;
-        transform.localRotation = Quaternion.Euler(upRotation.x, upRotation.y, upRotation.z);
+        // transform.localPosition = upPosition;
+        // transform.localRotation = Quaternion.Euler(upRotation.x, upRotation.y, upRotation.z);
 
     }
 
@@ -64,8 +64,8 @@ public class SwitchController : MonoBehaviour
         state = SwitchState.Down;
 
         // adjust switch
-        transform.localPosition = downPosition;
-        transform.localRotation = Quaternion.Euler(downRotation.x, downRotation.y, downRotation.z);
+        // transform.localPosition = downPosition;
+        // transform.localRotation = Quaternion.Euler(downRotation.x, downRotation.y, downRotation.z);
     }
 
     public void MoveNeutral()
@@ -73,8 +73,8 @@ public class SwitchController : MonoBehaviour
         state = SwitchState.Neutral;
 
         // return switch to neutral
-        transform.localPosition = neutralPosition;
-        transform.localRotation = Quaternion.Euler(neutralRotation.x, neutralRotation.y, neutralRotation.z);
+        // transform.localPosition = neutralPosition;
+        // transform.localRotation = Quaternion.Euler(neutralRotation.x, neutralRotation.y, neutralRotation.z);
     }
 
 }
